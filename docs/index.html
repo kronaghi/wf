@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kambiz Ronaghi — System Developer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #0E1014;
+      --ink-2: #14171F;
+      --panel: #161A22;
+      --line: #272C36;
+      --copper: #CC7A40;
+      --copper-bright: #E69356;
+      --text: #ECE7DC;
+      --muted: #888E9A;
+      --maxw: 1120px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--ink);
+      color: var(--text);
+      font-family: 'Inter', system-ui, sans-serif;
+      line-height: 1.6;
+      font-size: 17px;
+      -webkit-font-smoothing: antialiased;
+      /* schematic grid + a faint copper signal glow top-right */
+      background-image:
+        radial-gradient(900px 600px at 88% -8%, rgba(204,122,64,0.10), transparent 60%),
+        linear-gradient(var(--line) 1px, transparent 1px),
+        linear-gradient(90deg, var(--line) 1px, transparent 1px);
+      background-size: auto, 48px 48px, 48px 48px;
+      background-position: 0 0, 0 0, 0 0;
+      background-attachment: fixed, fixed, fixed;
+    }
+    body::before {
+      /* dim the grid so it reads as faint blueprint paper */
+      content: "";
+      position: fixed;
+      inset: 0;
+      background: var(--ink);
+      opacity: 0.86;
+      z-index: -1;
+    }
+
+    .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 28px; }
+
+    .mono {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    /* ---------- nav ---------- */
+    .nav {
+      position: sticky; top: 0; z-index: 20;
+      backdrop-filter: blur(10px);
+      background: rgba(14,16,20,0.72);
+      border-bottom: 1px solid var(--line);
+    }
+    .nav .wrap {
+      display: flex; align-items: center; justify-content: space-between;
+      height: 64px;
+    }
+    .brand {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 13px; letter-spacing: 0.12em;
+      color: var(--text); text-decoration: none;
+    }
+    .brand b { color: var(--copper); font-weight: 500; }
+    .nav-links { display: flex; gap: 30px; }
+    .nav-links a {
+      color: var(--muted); text-decoration: none;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--copper-bright); }
+
+    /* ---------- hero ---------- */
+    .hero { position: relative; padding: 120px 0 90px; overflow: hidden; }
+    .hero .eyebrow { color: var(--copper); margin-bottom: 26px; }
+    .hero h1 {
+      font-family: 'Fraunces', serif;
+      font-weight: 400;
+      font-size: clamp(2.8rem, 8vw, 6.4rem);
+      line-height: 0.98;
+      letter-spacing: -0.02em;
+      max-width: 14ch;
+    }
+    .hero h1 em {
+      font-style: italic;
+      color: var(--copper-bright);
+    }
+    .hero p.lede {
+      margin-top: 30px;
+      max-width: 56ch;
+      font-size: clamp(1.05rem, 2.2vw, 1.3rem);
+      color: #C9CBD1;
+    }
+    .hero .name {
+      margin-top: 40px;
+      display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap;
+      color: var(--muted);
+    }
+    .hero .name .who {
+      font-family: 'Fraunces', serif; font-size: 1.25rem; color: var(--text);
+    }
+
+    /* signature: copper trace that draws on load */
+    .trace {
+      position: absolute; right: -40px; top: 40px;
+      width: 460px; max-width: 46vw; height: auto; opacity: 0.9;
+      pointer-events: none;
+    }
+    .trace path, .trace line { stroke: var(--copper); stroke-width: 1.4; fill: none; }
+    .trace circle { fill: var(--ink); stroke: var(--copper); stroke-width: 1.4; }
+    .trace .draw {
+      stroke-dasharray: 1400; stroke-dashoffset: 1400;
+      animation: draw 2.4s ease forwards 0.3s;
+    }
+    .trace .node { opacity: 0; animation: pop 0.4s ease forwards; }
+    .trace .n1 { animation-delay: 1.0s; }
+    .trace .n2 { animation-delay: 1.6s; }
+    .trace .n3 { animation-delay: 2.2s; }
+    @keyframes draw { to { stroke-dashoffset: 0; } }
+    @keyframes pop { to { opacity: 1; } }
+
+    /* ---------- ledger / stats ---------- */
+    .ledger {
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      background: linear-gradient(var(--ink-2), var(--ink));
+    }
+    .ledger .wrap {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+    }
+    .stat { padding: 38px 0; }
+    .stat + .stat { border-left: 1px solid var(--line); padding-left: 32px; }
+    .stat .num {
+      font-family: 'Fraunces', serif; font-weight: 500;
+      font-size: clamp(2.4rem, 5vw, 3.4rem); line-height: 1;
+      color: var(--text);
+    }
+    .stat .num span { color: var(--copper); }
+    .stat .label { color: var(--muted); margin-top: 12px; }
+
+    /* ---------- sections ---------- */
+    .section { padding: 96px 0; border-bottom: 1px solid var(--line); }
+    .section-head { display: flex; align-items: baseline; gap: 18px; margin-bottom: 38px; }
+    .section-head .tag { color: var(--copper); white-space: nowrap; }
+    .section-head h2 {
+      font-family: 'Fraunces', serif; font-weight: 400;
+      font-size: clamp(1.8rem, 4vw, 2.8rem); letter-spacing: -0.01em;
+      line-height: 1.05;
+    }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1.1fr; gap: 56px; align-items: start; }
+    .prose p { color: #C3C7CF; max-width: 60ch; }
+    .prose p + p { margin-top: 18px; }
+
+    /* signature: the stack descent (AI -> C) */
+    .stack { display: flex; flex-direction: column; }
+    .layer {
+      position: relative;
+      display: grid; grid-template-columns: 64px 1fr auto; align-items: center;
+      gap: 18px;
+      padding: 22px 22px 22px 0;
+      border-left: 1.4px solid var(--line);
+      margin-left: 8px;
+      transition: border-color 0.25s, transform 0.25s;
+    }
+    .layer::before {
+      content: ""; position: absolute; left: -6px; top: 50%;
+      width: 10px; height: 10px; border-radius: 50%;
+      background: var(--ink); border: 1.4px solid var(--copper);
+      transform: translateY(-50%); transition: background 0.25s, box-shadow 0.25s;
+    }
+    .layer:hover { border-color: var(--copper); transform: translateX(4px); }
+    .layer:hover::before { background: var(--copper); box-shadow: 0 0 14px rgba(204,122,64,0.7); }
+    .layer .lvl { color: var(--copper); }
+    .layer .lname { font-family: 'Fraunces', serif; font-size: 1.3rem; }
+    .layer .ldesc { color: var(--muted); font-size: 0.95rem; }
+    .stack-note { margin-top: 18px; color: var(--muted); }
+
+    /* reveal on scroll */
+    .reveal { opacity: 0; transform: translateY(18px); transition: opacity 0.7s ease, transform 0.7s ease; }
+    .reveal.in { opacity: 1; transform: none; }
+
+    /* ---------- footer ---------- */
+    .foot { padding: 46px 0; }
+    .foot .wrap { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px; }
+    .foot .mono { color: var(--muted); }
+
+    @media (max-width: 760px) {
+      .nav-links { gap: 16px; }
+      .nav-links a { font-size: 11px; }
+      .trace { display: none; }
+      .ledger .wrap { grid-template-columns: 1fr; }
+      .stat + .stat { border-left: 0; padding-left: 0; border-top: 1px solid var(--line); }
+      .grid-2 { grid-template-columns: 1fr; gap: 36px; }
+      .layer { grid-template-columns: 52px 1fr; }
+      .layer .ldesc { grid-column: 2; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .trace .draw { animation: none; stroke-dashoffset: 0; }
+      .trace .node { animation: none; opacity: 1; }
+      .reveal { opacity: 1; transform: none; transition: none; }
+    }
+
+    a:focus-visible, .layer:focus-visible { outline: 2px solid var(--copper-bright); outline-offset: 3px; }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <div class="wrap">
+      <a class="brand" href="#top">KR<b>//</b>SYSTEMS</a>
+      <div class="nav-links">
+        <a href="#top">Home</a>
+        <a href="#about">About</a>
+        <a href="#expertise">Expertise</a>
+        <a href="#teaching">Teaching</a>
+      </div>
+    </div>
+  </nav>
+
+  <header class="hero" id="top">
+    <div class="wrap">
+      <div class="eyebrow mono">Freelance System Developer</div>
+      <h1>The mind behind the <em>machines.</em></h1>
+      <p class="lede">Crafting robust, scalable, and efficient software for over three decades — from system architecture to AI-powered applications, built to last.</p>
+      <div class="name">
+        <span class="who">Kambiz Ronaghi</span>
+        <span class="mono">— designing &amp; shipping software since the 1990s</span>
+      </div>
+    </div>
+
+    <svg class="trace" viewBox="0 0 460 360" aria-hidden="true">
+      <path class="draw" d="M10 40 H180 V120 H320 V60 H450 M180 120 V220 H80 V320 H300 V230 H450 M320 60 V20" />
+      <circle class="node n1" cx="180" cy="120" r="6" />
+      <circle class="node n2" cx="80"  cy="320" r="6" />
+      <circle class="node n3" cx="300" cy="230" r="6" />
+    </svg>
+  </header>
+
+  <section class="ledger">
+    <div class="wrap">
+      <div class="stat reveal">
+        <div class="num">30<span>+</span></div>
+        <div class="label mono">Years developing</div>
+      </div>
+      <div class="stat reveal">
+        <div class="num">30<span>+</span></div>
+        <div class="label mono">Years teaching</div>
+      </div>
+      <div class="stat reveal">
+        <div class="num">250<span>+</span></div>
+        <div class="label mono">Applications launched</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="about">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="tag mono">// About</span>
+        <h2>Three decades of designing and shipping software.</h2>
+      </div>
+      <div class="grid-2 reveal">
+        <div class="prose">
+          <p>I architect systems and turn hard problems into software that lasts — dependable, scalable, and efficient by design rather than by accident.</p>
+        </div>
+        <div class="prose">
+          <p>The work spans the whole range of the craft: high-level, AI-powered products at the top of the stack, all the way down to the metal where every byte and cycle counts.</p>
+          <p>What ties it together is a single habit — turning complexity into clarity, in the code and for the people who depend on it.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="expertise">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="tag mono">// Expertise</span>
+        <h2>From AI development to C — a full ledger of disciplines.</h2>
+      </div>
+      <div class="reveal">
+        <div class="stack">
+          <div class="layer" tabindex="0">
+            <span class="lvl mono">L4</span>
+            <span class="lname">AI development</span>
+            <span class="ldesc">intelligent, data-driven applications</span>
+          </div>
+          <div class="layer" tabindex="0">
+            <span class="lvl mono">L3</span>
+            <span class="lname">Application engineering</span>
+            <span class="ldesc">robust, scalable products end to end</span>
+          </div>
+          <div class="layer" tabindex="0">
+            <span class="lvl mono">L2</span>
+            <span class="lname">System architecture</span>
+            <span class="ldesc">the structure everything else stands on</span>
+          </div>
+          <div class="layer" tabindex="0">
+            <span class="lvl mono">L1</span>
+            <span class="lname">C &amp; the metal</span>
+            <span class="ldesc">close to the hardware, where cycles count</span>
+          </div>
+        </div>
+        <p class="stack-note mono">Top of the stack to the bare metal — one continuous range.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="teaching">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="tag mono">// Teaching</span>
+        <h2>Turning complexity into clarity for future engineers and scientists.</h2>
+      </div>
+      <div class="grid-2 reveal">
+        <div class="prose">
+          <p>Alongside building systems, I have spent 30+ years teaching — helping the next generation of engineers and scientists make sense of the machines.</p>
+        </div>
+        <div class="prose">
+          <p>Good teaching and good architecture share the same goal: take something genuinely complex and make it clear enough to build on with confidence.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <div class="wrap">
+      <span class="mono">Kambiz Ronaghi // System Developer</span>
+      <span class="mono">The mind behind the machines</span>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var els = document.querySelectorAll('.reveal');
+      if (reduce || !('IntersectionObserver' in window)) {
+        els.forEach(function (el) { el.classList.add('in'); });
+        return;
+      }
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+        });
+      }, { threshold: 0.15 });
+      els.forEach(function (el) { io.observe(el); });
+    })();
+  </script>
+</body>
+</html>
